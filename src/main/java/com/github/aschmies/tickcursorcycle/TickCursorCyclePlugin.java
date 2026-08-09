@@ -115,11 +115,17 @@ public class TickCursorCyclePlugin extends Plugin
 	 */
 	private static BufferedImage loadSystemCursor()
 	{
-		String sysRoot = System.getenv("SystemRoot");
-		if (sysRoot == null)
+		if (!System.getProperty("os.name", "").toLowerCase().contains("windows"))
 		{
 			return null;
 		}
+		// Derive the Windows root from the drive that java.home lives on (e.g. C:\)
+		java.nio.file.Path driveRoot = Paths.get(System.getProperty("java.home", "C:\\")).getRoot();
+		if (driveRoot == null)
+		{
+			return null;
+		}
+		String sysRoot = driveRoot.resolve("Windows").toString();
 		String[] candidates = {"aero_arrow.cur", "arrow_r.cur"};
 		for (String name : candidates)
 		{
