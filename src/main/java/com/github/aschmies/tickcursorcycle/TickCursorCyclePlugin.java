@@ -23,7 +23,7 @@ import net.runelite.client.ui.ClientUI;
 @Slf4j
 @PluginDescriptor(
 name = "Tick Cursor",
-description = "Cycles the mouse cursor colour on each game tick",
+description = "Cycles the mouse cursor colour on each game tick, with 1-6 configurable tick slots and user-selectable colour and opacity for each slot.",
 tags = {"cursor", "tick", "colour", "mouse", "highlight"}
 )
 public class TickCursorCyclePlugin extends Plugin
