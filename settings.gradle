@@ -1,0 +1,11 @@
+pluginManagement {
+	repositories {
+		mavenLocal()
+		gradlePluginPortal()
+		maven {
+			url = 'https://repo.runelite.net'
+		}
+	}
+}
+
+rootProject.name = 'tickcursorcycle'
