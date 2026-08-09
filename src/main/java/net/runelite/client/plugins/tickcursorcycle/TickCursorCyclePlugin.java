@@ -269,11 +269,6 @@ public class TickCursorCyclePlugin extends Plugin
 				int sg = (argb >>> 8)  & 0xFF;
 				int sb =  argb         & 0xFF;
 				float lum = (sr + sg + sb) / (3f * 255f);
-				// skip semi-transparent dark pixels (drop shadow) to prevent a thick right edge
-				if (lum < 0.2f && sa < 200)
-				{
-					continue;
-				}
 
 				int nr = Math.min(255, Math.round(cr * lum * 255f));
 				int ng = Math.min(255, Math.round(cg * lum * 255f));
