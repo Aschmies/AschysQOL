@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Aschy
+ * Copyright (c) 2026, Aschy
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -50,7 +50,7 @@ import net.runelite.client.ui.ClientUI;
 @PluginDescriptor(
 	name = "Tick Cursor",
 	description = "Cycles the mouse cursor colour on each game tick",
-	tags = {"cursor", "tick", "color", "colour", "mouse", "highlight"},
+	tags = {"cursor", "tick", "colour", "mouse", "highlight"},
 	enabledByDefault = false
 )
 public class TickCursorCyclePlugin extends Plugin
@@ -114,12 +114,12 @@ public class TickCursorCyclePlugin extends Plugin
 
 	private void updateCursor()
 	{
-		Color color = colorForTick(tickIndex);
-		BufferedImage image = baseCursor != null ? tintCursor(baseCursor, color) : buildPolygonCursor(color);
+		Color colour = colourForTick(tickIndex);
+		BufferedImage image = baseCursor != null ? tintCursor(baseCursor, colour) : buildPolygonCursor(colour);
 		clientUI.setCursor(image, "tick-cursor");
 	}
 
-	private Color colorForTick(int index)
+	private Color colourForTick(int index)
 	{
 		switch (index)
 		{
@@ -136,7 +136,7 @@ public class TickCursorCyclePlugin extends Plugin
 
 	/**
 	 * Reads the Windows default arrow cursor from the system .cur file (DIB or PNG format).
-	 * Prefers the 32x32 entry; falls back to the smallest available size.
+	 * Prefers the 32×32 entry; falls back to the smallest available size.
 	 */
 	private static BufferedImage loadSystemCursor()
 	{
@@ -153,7 +153,7 @@ public class TickCursorCyclePlugin extends Plugin
 				byte[] data = Files.readAllBytes(Paths.get(sysRoot, "Cursors", name));
 				int count = (data[4] & 0xFF) | ((data[5] & 0xFF) << 8);
 
-				// Prefer 32x32; otherwise take the smallest available entry
+				// Prefer 32×32; otherwise take the smallest available entry
 				int chosen = -1;
 				int chosenW = Integer.MAX_VALUE;
 				for (int i = 0; i < count; i++)
@@ -165,8 +165,8 @@ public class TickCursorCyclePlugin extends Plugin
 					int sz  = readInt32(data, base + 8);
 					int off = readInt32(data, base + 12);
 					if (off < 0 || sz <= 0 || off + sz > data.length) continue;
-					if (w == 32) { chosen = i; break; }
-					if (w < chosenW) { chosenW = w; chosen = i; }
+					if (w == 32) { chosen = i; break; }          // exact match wins immediately
+					if (w < chosenW) { chosenW = w; chosen = i; } // otherwise keep smallest
 				}
 				if (chosen < 0) continue;
 
@@ -174,6 +174,7 @@ public class TickCursorCyclePlugin extends Plugin
 				int imgSz  = readInt32(data, base + 8);
 				int imgOff = readInt32(data, base + 12);
 
+				// Detect PNG (magic 0x89 0x50) vs. DIB (BITMAPINFOHEADER starts with 0x28 0x00 0x00 0x00)
 				if (data[imgOff] == (byte) 0x89 && data[imgOff + 1] == 0x50)
 				{
 					BufferedImage img = ImageIO.read(new ByteArrayInputStream(data, imgOff, imgSz));
@@ -181,6 +182,7 @@ public class TickCursorCyclePlugin extends Plugin
 				}
 				else
 				{
+					// DIB: BITMAPINFOHEADER + AND mask + XOR (BGRA) pixel data
 					BufferedImage img = parseDibCursor(data, imgOff);
 					if (img != null) return img;
 				}
@@ -190,19 +192,19 @@ public class TickCursorCyclePlugin extends Plugin
 				log.debug("Could not read cursor file {}", name, e);
 			}
 		}
-		log.debug("System cursor unavailable - using polygon fallback");
+		log.debug("System cursor unavailable — using polygon fallback");
 		return null;
 	}
 
 	/**
 	 * Parses a 32-bit DIB cursor image from a raw CUR/ICO image payload.
-	 * Layout: 40-byte BITMAPINFOHEADER, XOR (color) rows bottom-up, then AND mask.
+	 * Layout: 40-byte BITMAPINFOHEADER, AND mask, then bottom-up BGRA XOR rows.
 	 */
 	private static BufferedImage parseDibCursor(byte[] data, int offset)
 	{
 		if (offset + 40 > data.length) return null;
 		int biWidth    = readInt32(data, offset + 4);
-		int biHeight   = readInt32(data, offset + 8);
+		int biHeight   = readInt32(data, offset + 8); // = 2 × actual height in CUR files
 		int biBitCount = (data[offset + 14] & 0xFF) | ((data[offset + 15] & 0xFF) << 8);
 		if (biBitCount != 32 || biWidth <= 0 || biHeight <= 0) return null;
 
@@ -240,18 +242,18 @@ public class TickCursorCyclePlugin extends Plugin
 	}
 
 	/**
-	 * Multiply-blends the user colour over the grayscale cursor image.
+	 * Multiply-blends the user's colour over the grayscale cursor image.
 	 * Black pixels (outline) stay black; white pixels become the chosen colour.
 	 */
-	private static BufferedImage tintCursor(BufferedImage source, Color color)
+	private static BufferedImage tintCursor(BufferedImage source, Color colour)
 	{
 		int w = source.getWidth();
 		int h = source.getHeight();
 		BufferedImage result = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
-		float cr = color.getRed()   / 255f;
-		float cg = color.getGreen() / 255f;
-		float cb = color.getBlue()  / 255f;
-		float ca = color.getAlpha() / 255f;
+		float cr = colour.getRed()   / 255f;
+		float cg = colour.getGreen() / 255f;
+		float cb = colour.getBlue()  / 255f;
+		float ca = colour.getAlpha() / 255f;
 
 		for (int y = 0; y < h; y++)
 		{
@@ -267,6 +269,11 @@ public class TickCursorCyclePlugin extends Plugin
 				int sg = (argb >>> 8)  & 0xFF;
 				int sb =  argb         & 0xFF;
 				float lum = (sr + sg + sb) / (3f * 255f);
+				// skip semi-transparent dark pixels (drop shadow) to prevent a thick right edge
+				if (lum < 0.2f && sa < 200)
+				{
+					continue;
+				}
 
 				int nr = Math.min(255, Math.round(cr * lum * 255f));
 				int ng = Math.min(255, Math.round(cg * lum * 255f));
@@ -289,6 +296,7 @@ public class TickCursorCyclePlugin extends Plugin
 
 		Polygon arrow = new Polygon(ARROW_X, ARROW_Y, ARROW_X.length);
 
+		// draw black border first; fill on top leaves only the outer edge of stroke visible
 		g.setStroke(new BasicStroke(2.5f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
 		g.setColor(new Color(0, 0, 0, color.getAlpha()));
 		g.draw(arrow);

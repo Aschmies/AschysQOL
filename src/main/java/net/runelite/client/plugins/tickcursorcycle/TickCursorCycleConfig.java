@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Aschy
+ * Copyright (c) 2026, Aschy
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -39,7 +39,7 @@ public interface TickCursorCycleConfig extends Config
 		position = 0,
 		keyName = "tickCount",
 		name = "Tick count",
-		description = "How many ticks to cycle through (1-6). Colour slots beyond this number are ignored."
+		description = "How many ticks to cycle through (1–6). Colour slots beyond this number are ignored."
 	)
 	default int tickCount()
 	{
@@ -55,7 +55,7 @@ public interface TickCursorCycleConfig extends Config
 	)
 	default Color color1()
 	{
-		return new Color(255, 255, 255, 220);
+		return new Color(255, 255, 255, 160);
 	}
 
 	@Alpha
@@ -67,7 +67,7 @@ public interface TickCursorCycleConfig extends Config
 	)
 	default Color color2()
 	{
-		return new Color(135, 206, 235, 220);
+		return new Color(160, 160, 160, 160);
 	}
 
 	@Alpha
@@ -79,7 +79,7 @@ public interface TickCursorCycleConfig extends Config
 	)
 	default Color color3()
 	{
-		return new Color(255, 182, 193, 220);
+		return new Color(135, 206, 235, 160);
 	}
 
 	@Alpha
@@ -91,7 +91,7 @@ public interface TickCursorCycleConfig extends Config
 	)
 	default Color color4()
 	{
-		return new Color(189, 176, 228, 220);
+		return new Color(189, 176, 228, 160);
 	}
 
 	@Alpha
@@ -103,7 +103,7 @@ public interface TickCursorCycleConfig extends Config
 	)
 	default Color color5()
 	{
-		return new Color(152, 223, 179, 220);
+		return new Color(152, 223, 179, 160);
 	}
 
 	@Alpha
@@ -115,6 +115,6 @@ public interface TickCursorCycleConfig extends Config
 	)
 	default Color color6()
 	{
-		return new Color(255, 236, 139, 220);
+		return new Color(255, 236, 139, 160);
 	}
 }
