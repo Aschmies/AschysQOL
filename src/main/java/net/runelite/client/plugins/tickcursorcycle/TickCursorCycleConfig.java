@@ -67,7 +67,7 @@ public interface TickCursorCycleConfig extends Config
 	)
 	default Color color2()
 	{
-		return new Color(135, 206, 235, 220);
+		return new Color(30, 144, 255, 230);
 	}
 
 	@Alpha
@@ -79,7 +79,7 @@ public interface TickCursorCycleConfig extends Config
 	)
 	default Color color3()
 	{
-		return new Color(160, 160, 160, 220);
+		return new Color(105, 105, 105, 230);
 	}
 
 	@Alpha
@@ -91,7 +91,7 @@ public interface TickCursorCycleConfig extends Config
 	)
 	default Color color4()
 	{
-		return new Color(189, 176, 228, 220);
+		return new Color(147, 112, 219, 230);
 	}
 
 	@Alpha
@@ -103,7 +103,7 @@ public interface TickCursorCycleConfig extends Config
 	)
 	default Color color5()
 	{
-		return new Color(152, 223, 179, 220);
+		return new Color(60, 179, 113, 230);
 	}
 
 	@Alpha
@@ -115,6 +115,6 @@ public interface TickCursorCycleConfig extends Config
 	)
 	default Color color6()
 	{
-		return new Color(255, 236, 139, 220);
+		return new Color(218, 165, 32, 230);
 	}
 }
