@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (c) 2026, Aschy
  * All rights reserved.
  *
@@ -39,7 +39,7 @@ public interface TickCursorCycleConfig extends Config
 		position = 0,
 		keyName = "tickCount",
 		name = "Tick count",
-		description = "How many ticks to cycle through (1–6). Colour slots beyond this number are ignored."
+		description = "How many ticks to cycle through (1â€“6). Colour slots beyond this number are ignored."
 	)
 	default int tickCount()
 	{

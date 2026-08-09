@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (c) 2026, Aschy
  * All rights reserved.
  *
@@ -136,7 +136,7 @@ public class TickCursorCyclePlugin extends Plugin
 
 	/**
 	 * Reads the Windows default arrow cursor from the system .cur file (DIB or PNG format).
-	 * Prefers the 32×32 entry; falls back to the smallest available size.
+	 * Prefers the 32Ã—32 entry; falls back to the smallest available size.
 	 */
 	private static BufferedImage loadSystemCursor()
 	{
@@ -153,7 +153,7 @@ public class TickCursorCyclePlugin extends Plugin
 				byte[] data = Files.readAllBytes(Paths.get(sysRoot, "Cursors", name));
 				int count = (data[4] & 0xFF) | ((data[5] & 0xFF) << 8);
 
-				// Prefer 32×32; otherwise take the smallest available entry
+				// Prefer 32Ã—32; otherwise take the smallest available entry
 				int chosen = -1;
 				int chosenW = Integer.MAX_VALUE;
 				for (int i = 0; i < count; i++)
@@ -192,7 +192,7 @@ public class TickCursorCyclePlugin extends Plugin
 				log.debug("Could not read cursor file {}", name, e);
 			}
 		}
-		log.debug("System cursor unavailable — using polygon fallback");
+		log.debug("System cursor unavailable â€” using polygon fallback");
 		return null;
 	}
 
@@ -204,7 +204,7 @@ public class TickCursorCyclePlugin extends Plugin
 	{
 		if (offset + 40 > data.length) return null;
 		int biWidth    = readInt32(data, offset + 4);
-		int biHeight   = readInt32(data, offset + 8); // = 2 × actual height in CUR files
+		int biHeight   = readInt32(data, offset + 8); // = 2 Ã— actual height in CUR files
 		int biBitCount = (data[offset + 14] & 0xFF) | ((data[offset + 15] & 0xFF) << 8);
 		if (biBitCount != 32 || biWidth <= 0 || biHeight <= 0) return null;
 
